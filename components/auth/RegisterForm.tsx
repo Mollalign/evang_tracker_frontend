@@ -6,15 +6,19 @@ import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/store/hooks'
 import { registerAsync } from '@/store/slices/authSlice'
 import { registerSchema } from '@/lib/utils/validation'
-import{ Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { FormField } from '@/components/ui/form-field'
 import Link from 'next/link'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { RegisterRequest } from '@/types/auth'
+import { useState } from 'react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function RegisterForm() {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -27,7 +31,8 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterRequest) => {
     try {
       const { confirmPassword, ...registerData } = data
-      const result = await dispatch(registerAsync(registerData))
+      // Only evangelists can register, admins cannot register
+      const result = await dispatch(registerAsync({ ...registerData, role: 'evangelist' }))
       
       if (registerAsync.fulfilled.match(result)) {
         toast.success('Registration successful! Please login.')
@@ -41,59 +46,74 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormField
         label="Full Name"
+        placeholder="John Doe"
         {...register('full_name')}
         error={errors.full_name?.message as string}
       />
 
-      <Input
+      <FormField
         label="Email"
         type="email"
+        placeholder="john.doe@example.com"
         {...register('email')}
         error={errors.email?.message as string}
       />
 
-      <Input
+      <FormField
         label="Phone Number (Optional)"
         type="tel"
+        placeholder="+1 (555) 123-4567"
         {...register('phone_number')}
         error={errors.phone_number?.message as string}
       />
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Role</label>
-        <select
-          {...register('role')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-        >
-          <option value="evangelist">Evangelist</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-
-      <Input
+      <FormField
         label="Password"
-        type="password"
+        type={showPassword ? "text" : "password"}
+        placeholder="Create a password"
         {...register('password')}
         error={errors.password?.message as string}
+        rightElement={
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        }
       />
 
-      <Input
+      <FormField
         label="Confirm Password"
-        type="password"
+        type={showConfirmPassword ? "text" : "password"}
+        placeholder="Confirm your password"
         {...register('confirmPassword')}
         error={errors.confirmPassword?.message as string}
+        rightElement={
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+          >
+            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        }
       />
 
-      <Button type="submit" isLoading={isSubmitting} className="w-full">
-        Register
+      <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
+        {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+        {isSubmitting ? 'Creating account...' : 'Register'}
       </Button>
 
-      <p className="text-center text-sm">
+      <p className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/login" className="text-blue-600 hover:underline">
+        <Link href="/login" className="text-primary font-medium hover:underline">
           Login
         </Link>
       </p>

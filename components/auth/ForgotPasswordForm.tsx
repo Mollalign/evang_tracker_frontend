@@ -5,11 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAppDispatch } from '@/store/hooks'
 import { forgotPasswordAsync } from '@/store/slices/authSlice'
 import { forgotPasswordSchema } from '@/lib/utils/validation'
-import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { FormField } from '@/components/ui/form-field'
 import Link from 'next/link'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { useState } from 'react'
+import { CheckCircle2, Loader2 } from 'lucide-react'
 
 export default function ForgotPasswordForm() {
   const dispatch = useAppDispatch()
@@ -39,30 +40,42 @@ export default function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="text-center space-y-4">
-        <p className="text-green-600">Check your email for the password reset link!</p>
-        <Link href="/login" className="text-blue-600 hover:underline">
-          Back to Login
-        </Link>
+      <div className="text-center space-y-6 py-4 animate-in fade-in-0 slide-in-from-bottom-4">
+        <div className="flex justify-center">
+          <div className="rounded-full bg-gradient-to-br from-green-100 to-emerald-100 p-4 shadow-lg">
+            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold text-gray-900">Check your email</h3>
+          <p className="text-sm text-gray-600">
+            We&apos;ve sent a password reset link to your email address.
+          </p>
+        </div>
+        <Button asChild variant="outline" className="w-full" size="lg">
+          <Link href="/login">Back to Login</Link>
+        </Button>
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormField
         label="Email"
         type="email"
+        placeholder="john.doe@example.com"
         {...register('email')}
         error={errors.email?.message as string}
       />
 
-      <Button type="submit" isLoading={isSubmitting} className="w-full">
-        Send Reset Link
+      <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
+        {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+        {isSubmitting ? 'Sending...' : 'Send Reset Link'}
       </Button>
 
-      <p className="text-center text-sm">
-        <Link href="/login" className="text-blue-600 hover:underline">
+      <p className="text-center text-sm text-muted-foreground">
+        <Link href="/login" className="text-primary font-medium hover:underline">
           Back to Login
         </Link>
       </p>
