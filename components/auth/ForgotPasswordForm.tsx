@@ -53,9 +53,11 @@ export default function ForgotPasswordForm() {
             We&apos;ve sent a password reset link to your email address.
           </p>
         </div>
-        <Button asChild variant="outline" className="w-full" size="lg">
-          <Link href="/login">Back to Login</Link>
-        </Button>
+        <Link href="/login" className="block">
+          <Button variant="outline" className="w-full" size="lg">
+            Back to Login
+          </Button>
+        </Link>
       </div>
     )
   }
