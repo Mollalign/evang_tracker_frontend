@@ -33,7 +33,7 @@ export default function LoginForm() {
       const result = await dispatch(loginAsync(data))
       if (loginAsync.fulfilled.match(result)) {
           toast.success('Login successful!')
-          router.push('/dashboard')
+          router.push("/dashboard")
       } else {
           toast.error(result.payload as string)
       }
@@ -49,7 +49,7 @@ export default function LoginForm() {
     <FormField
       label="Email"
       type="email"
-      placeholder="john.doe@example.com"
+      placeholder="molle@example.com"
       {...register('email')}
       error={errors.email?.message as string}
     />
@@ -81,19 +81,6 @@ export default function LoginForm() {
     <Button type="submit" disabled={isLoading} className="w-full" size="lg">
       {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
       {isLoading ? 'Logging in...' : 'Login'}
-    </Button>
-
-    <Button
-      type="button"
-      variant="outline"
-      className="w-full"
-      size="lg"
-      onClick={() => {
-        // Handle admin login - you can add admin login logic here
-        toast.info('Admin login feature coming soon')
-      }}
-    >
-      Login as Admin
     </Button>
 
     <p className="text-center text-sm text-muted-foreground">

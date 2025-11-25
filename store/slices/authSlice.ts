@@ -132,6 +132,11 @@ const authSlice = createSlice({
       
       // Clear localStorage
       tokenStorage.clearAll()
+      
+      // Clear cookie for middleware
+      if (typeof document !== 'undefined') {
+        document.cookie = 'accessToken=; path=/; max-age=0; SameSite=Lax'
+      }
     },
     clearError: (state) => {
       state.error = null
@@ -148,8 +153,19 @@ const authSlice = createSlice({
         state.isLoading = false
         state.accessToken = action.payload.accessToken
         state.refreshToken = action.payload.refreshToken
+        state.user = action.payload.user
         state.isAuthenticated = true
-        // Note: You'll need to fetch user data separately or include it in login response
+        state.error = null
+        
+        // Persist to localStorage
+        tokenStorage.setAccessToken(action.payload.accessToken)
+        tokenStorage.setRefreshToken(action.payload.refreshToken)
+        tokenStorage.setUser(action.payload.user)
+        
+        // Also set cookie for middleware (server-side access)
+        if (typeof document !== 'undefined') {
+          document.cookie = `accessToken=${action.payload.accessToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
+        }
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.isLoading = false

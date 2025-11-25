@@ -120,3 +120,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Enhanced animation delays */
+  .animate-delay-1000 {
+    animation-delay: 1s;
+  }
+  
+  .animate-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  /* Smooth pulse animation */
+  @keyframes smooth-pulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+  
+  .animate-smooth-pulse {
+    animation: smooth-pulse 4s ease-in-out infinite;
+  }
+}

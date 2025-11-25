@@ -18,7 +18,6 @@ export default function RegisterForm() {
   const router = useRouter()
   const dispatch = useAppDispatch()
   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -30,9 +29,11 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: RegisterRequest) => {
     try {
-      const { confirmPassword, ...registerData } = data
       // Only evangelists can register, admins cannot register
-      const result = await dispatch(registerAsync({ ...registerData, role: 'evangelist' }))
+      const result = await dispatch(registerAsync({
+        ...data,
+        role: 'evangelist'
+      }))
       
       if (registerAsync.fulfilled.match(result)) {
         toast.success('Registration successful! Please login.')
@@ -40,8 +41,9 @@ export default function RegisterForm() {
       } else {
         toast.error(result.payload as string)
       }
-    } catch (error: any) {
-      toast.error(error, 'An error occurred')
+    } catch (error) {
+      console.log(error)
+      toast.error("Error happened Registration")
     }
   }
 
@@ -49,7 +51,7 @@ export default function RegisterForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <FormField
         label="Full Name"
-        placeholder="John Doe"
+        placeholder="Mollalign Daniel"
         {...register('full_name')}
         error={errors.full_name?.message as string}
       />
@@ -57,7 +59,7 @@ export default function RegisterForm() {
       <FormField
         label="Email"
         type="email"
-        placeholder="john.doe@example.com"
+        placeholder="molledan69@gmail.com"
         {...register('email')}
         error={errors.email?.message as string}
       />
@@ -84,24 +86,6 @@ export default function RegisterForm() {
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-        }
-      />
-
-      <FormField
-        label="Confirm Password"
-        type={showConfirmPassword ? "text" : "password"}
-        placeholder="Confirm your password"
-        {...register('confirmPassword')}
-        error={errors.confirmPassword?.message as string}
-        rightElement={
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-          >
-            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         }
       />

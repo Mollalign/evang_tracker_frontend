@@ -2,19 +2,46 @@
 
 import { useAppSelector } from '@/store/hooks'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { tokenStorage } from '@/lib/utils/token'
 
 export default function DashboardPage() {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth)
   const router = useRouter()
+  const [checking, setChecking] = useState(true)
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Check both Redux state and localStorage as fallback
+    const token = tokenStorage.getAccessToken()
+    const storedUser = tokenStorage.getUser()
+    
+    // If Redux state isn't ready yet but localStorage has tokens, wait a bit
+    if (!isAuthenticated && token && storedUser) {
+      // Give Redux time to rehydrate
+      const timer = setTimeout(() => {
+        setChecking(false)
+        if (!isAuthenticated) {
+          router.push('/login')
+        }
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+    
+    // If no authentication at all, redirect immediately
+    if (!isAuthenticated && !token) {
+      setChecking(false)
       router.push('/login')
+      return
+    }
+    
+    // If authenticated, stop checking
+    if (isAuthenticated) {
+      setChecking(false)
     }
   }, [isAuthenticated, router])
 
-  if (!isAuthenticated) {
+  // Show loading while checking authentication
+  if (checking || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">

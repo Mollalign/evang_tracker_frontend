@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export default function proxy(request: NextRequest) {
-    const token = request.cookies.get('accessToken') ||
-        request.headers.get('authorization')?.replace('Bearer ', '')
+export default function middleware(request: NextRequest) {
+    const cookieToken = request.cookies.get('accessToken')
+    const token = cookieToken?.value || request.headers.get('authorization')?.replace('Bearer ', '')
 
     // Protected routes
     if (request.nextUrl.pathname.startsWith('/dashboard')) {
