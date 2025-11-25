@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { CheckCircle2, Loader2 } from 'lucide-react'
+import { ForgotPasswordRequest } from '@/types/auth'
 
 export default function ForgotPasswordForm() {
   const dispatch = useAppDispatch()
@@ -24,9 +25,9 @@ export default function ForgotPasswordForm() {
     resolver: zodResolver(forgotPasswordSchema),
   })
 
-  const onSubmit = async (data: { email: string }) => {
+  const onSubmit = async (data: ForgotPasswordRequest) => {
     try {
-      const result = await dispatch(forgotPasswordAsync(data.email))
+      const result = await dispatch(forgotPasswordAsync(data))
       if (forgotPasswordAsync.fulfilled.match(result)) {
         toast.success('Password reset link sent to your email!')
         setIsSubmitted(true)
