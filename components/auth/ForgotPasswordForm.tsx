@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useForm } from 'react-hook-form'
@@ -27,23 +28,34 @@ export default function ForgotPasswordForm() {
 
   const onSubmit = async (data: ForgotPasswordRequest) => {
     try {
-      const result = await dispatch(forgotPasswordAsync(data))
+      const result = await dispatch(forgotPasswordAsync(data.email))
+
       if (forgotPasswordAsync.fulfilled.match(result)) {
         toast.success('Password reset link sent to your email!')
         setIsSubmitted(true)
       } else {
-        toast.error(result.payload as string)
+        // result.payload is an object or string -> normalize it
+        const err = result.payload as any
+
+        if (typeof err === "string") {
+          toast.error(err)
+        } else if (Array.isArray(err?.detail)) {
+          toast.error(err.detail[0].msg)
+        } else {
+          toast.error("Something went wrong")
+        }
       }
-    } catch (error) {
-      toast.error('An error occurred')
+    } catch {
+      toast.error("Something went wrong")
     }
   }
+
 
   if (isSubmitted) {
     return (
       <div className="text-center space-y-6 py-4 animate-in fade-in-0 slide-in-from-bottom-4">
         <div className="flex justify-center">
-          <div className="rounded-full bg-gradient-to-br from-green-100 to-emerald-100 p-4 shadow-lg">
+          <div className="rounded-full bg-linear-to-br from-green-100 to-emerald-100 p-4 shadow-lg">
             <CheckCircle2 className="h-10 w-10 text-green-600" />
           </div>
         </div>

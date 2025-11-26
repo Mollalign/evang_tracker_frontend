@@ -26,6 +26,7 @@ export default function ResetPasswordForm() {
       toast.error('Invalid reset token')
       router.push('/forgot-password')
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken(tokenParam)
     }
   }, [searchParams, router])
@@ -57,6 +58,7 @@ export default function ResetPasswordForm() {
         toast.error(result.payload as string)
       }
     } catch (error) {
+      console.log(error)
       toast.error('An error occurred')
     }
   }
