@@ -1,216 +1,364 @@
 'use client'
 
-import { useAppSelector, useAppDispatch } from '@/store/hooks'
-import { logout } from '@/store/slices/authSlice'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { tokenStorage } from '@/lib/utils/token'
+import { useEffect } from 'react'
+import Link from 'next/link'
+import {
+  ArrowRight,
+  CalendarClock,
+  ClipboardList,
+  Loader2,
+  Plus,
+  Sparkles,
+  TrendingUp,
+  Users2,
+} from 'lucide-react'
+import { motion } from 'framer-motion'
+
+import { useAuth } from '@/lib/hooks/useAuth'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { LogOut } from 'lucide-react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
+const statHighlights = [
+  {
+    label: 'Total Reports',
+    value: '24',
+    change: '+12% vs last month',
+    accent: 'from-blue-500 to-indigo-500',
+  },
+  {
+    label: 'Individuals Reached',
+    value: '812',
+    change: '+94 people',
+    accent: 'from-emerald-500 to-teal-500',
+  },
+  {
+    label: 'Follow-ups Scheduled',
+    value: '36',
+    change: '8 pending today',
+    accent: 'from-amber-500 to-orange-500',
+  },
+  {
+    label: 'Volunteers Active',
+    value: '15',
+    change: '3 new this week',
+    accent: 'from-violet-500 to-purple-500',
+  },
+]
+
+const timeline = [
+  {
+    title: 'Downtown Outreach',
+    meta: '18 people heard • 3 responded',
+    time: '2h ago',
+  },
+  {
+    title: 'University Chapel',
+    meta: '40 students • 12 interested',
+    time: 'Yesterday',
+  },
+  {
+    title: 'Community Health Drive',
+    meta: '56 people • 8 commitments',
+    time: 'This week',
+  },
+]
+
+const quickActions = [
+  {
+    title: 'Create report',
+    description: 'Log a new outreach story',
+    href: '/reports/create',
+    icon: ClipboardList,
+    accent: 'from-indigo-500/90 via-indigo-500 to-indigo-600',
+  },
+  {
+    title: 'Add a person',
+    description: 'Capture key follow-up info',
+    href: '/reports',
+    icon: Users2,
+    accent: 'from-emerald-500/80 via-emerald-500 to-teal-500',
+  },
+  {
+    title: 'Plan next outing',
+    description: 'Schedule the next field day',
+    href: '/dashboard?tab=insights',
+    icon: CalendarClock,
+    accent: 'from-amber-500/80 via-orange-500 to-orange-600',
+    disabled: true,
+  },
+]
+
+const insightTiles = [
+  { label: 'Pending follow-ups', value: '08', meta: 'due this week' },
+  { label: 'Notes awaiting review', value: '14', meta: 'assign to admin' },
+  { label: 'People ready for class', value: '05', meta: 'discipleship' },
+]
 
 export default function DashboardPage() {
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth)
-  const dispatch = useAppDispatch()
-  const router = useRouter()
-  const [checking, setChecking] = useState(true)
-
-  const handleLogout = () => {
-    dispatch(logout())
-    router.push('/login')
-  }
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
 
   useEffect(() => {
-    // Check both Redux state and localStorage as fallback
-    const token = tokenStorage.getAccessToken()
-    const storedUser = tokenStorage.getUser()
-    
-    // If Redux state isn't ready yet but localStorage has tokens, wait a bit
-    if (!isAuthenticated && token && storedUser) {
-      // Give Redux time to rehydrate
-      const timer = setTimeout(() => {
-        setChecking(false)
-        if (!isAuthenticated) {
-          router.push('/login')
-        }
-      }, 500)
-      return () => clearTimeout(timer)
+    if (!isLoading && !isAuthenticated) {
+      window.location.href = '/login'
     }
-    
-    // If no authentication at all, redirect immediately
-    if (!isAuthenticated && !token) {
-      setChecking(false)
-      router.push('/login')
-      return
-    }
-    
-    // If authenticated, stop checking
-    if (isAuthenticated) {
-      setChecking(false)
-    }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isLoading])
 
-  // Show loading while checking authentication
-  if (checking || !isAuthenticated) {
+  if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="relative">
-            <div className="w-12 h-12 border-4 border-blue-200 rounded-full"></div>
-            <div className="w-12 h-12 border-4 border-transparent border-t-blue-600 rounded-full animate-spin absolute top-0 left-0"></div>
-          </div>
-          <p className="text-sm text-muted-foreground font-medium">Loading...</p>
-        </div>
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
       </div>
     )
   }
 
-  // Dummy data for demonstration
-  const stats = [
-    { label: 'Total Evangelism Records', value: '24', change: '+12%', icon: '📊' },
-    { label: 'This Month', value: '8', change: '+3', icon: '📅' },
-    { label: 'Active Evangelists', value: '15', change: '+2', icon: '👥' },
-    { label: 'Success Rate', value: '92%', change: '+5%', icon: '✅' },
-  ]
-
-  const recentActivities = [
-    { id: 1, name: 'John Doe', action: 'Added new evangelism record', time: '2 hours ago', type: 'record' },
-    { id: 2, name: 'Jane Smith', action: 'Updated profile information', time: '5 hours ago', type: 'profile' },
-    { id: 3, name: 'Mike Johnson', action: 'Completed evangelism session', time: '1 day ago', type: 'record' },
-    { id: 4, name: 'Sarah Williams', action: 'Joined the team', time: '2 days ago', type: 'team' },
-  ]
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="mb-8 flex items-start justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Welcome back, {user?.full_name || 'User'}! 👋
-            </h1>
-            <p className="text-gray-600">Here's what's happening with your evangelism tracking today.</p>
-          </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow duration-200"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-3xl">{stat.icon}</div>
-                <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                  {stat.change}
-                </span>
-              </div>
-              <div className="space-y-1">
-                <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-gray-600">{stat.label}</p>
-              </div>
+    <motion.div
+      className="space-y-8 pb-16"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+    >
+      <section className="grid gap-6 lg:grid-cols-[1.4fr,1fr]">
+        <Card className="bg-gradient-to-br from-[#FCE7F3] via-[#DDD6FE] to-[#FEF3C7] text-slate-900 shadow-[0_40px_90px_rgba(249,168,212,0.35)]">
+          <CardHeader className="space-y-3">
+            <CardDescription className="text-slate-500 uppercase tracking-[0.2em]">
+              Welcome back
+            </CardDescription>
+            <CardTitle className="text-3xl">
+              {user?.full_name || 'Team member'}, your mission field is ready.
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-slate-700">
+            <p className="text-sm leading-relaxed text-slate-600">
+              Track every conversation, celebrate every testimony, and keep your
+              team aligned around the Great Commission.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Button
+                asChild
+                variant="secondary"
+                className="bg-white/90 text-slate-900 hover:bg-white"
+              >
+                <Link href="/reports/create">
+                  <Plus className="h-4 w-4" />
+                  Log new outreach
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-slate-700 hover:bg-white/50"
+                onClick={logout}
+              >
+                Quick sign out
+              </Button>
             </div>
-          ))}
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Activities */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activities</h2>
-            <div className="space-y-4">
-              {recentActivities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-100"
-                >
-                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
-                    {activity.name.charAt(0)}
+        <Card className="glass-panel">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-emerald-500" />
+              Weekly momentum
+            </CardTitle>
+            <CardDescription>
+              Snapshot of engagements over the last 7 days
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {timeline.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">{item.meta}</p>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{activity.name}</p>
-                    <p className="text-sm text-gray-600">{activity.action}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {activity.type}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* User Info Card */}
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Profile</h2>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  {user?.full_name?.charAt(0) || 'U'}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900">{user?.full_name || 'User'}</p>
-                  <p className="text-sm text-gray-600">{user?.email || 'No email'}</p>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-gray-200 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Role</span>
-                  <span className="text-sm font-medium text-gray-900 capitalize">{user?.role || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Status</span>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Active
+                  <span className="text-xs font-medium text-slate-400">
+                    {item.time}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Member Since</span>
-                  <span className="text-sm font-medium text-gray-900">Jan 2024</span>
-                </div>
               </div>
+            ))}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {quickActions.map((action) => {
+          const Icon = action.icon
+          return (
+            <Link
+              key={action.title}
+              href={action.disabled ? '#' : action.href}
+              className={cn(
+                'group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 dark:border-white/10 dark:bg-slate-900/70',
+                action.disabled && 'pointer-events-none opacity-60'
+              )}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div
+                  className={`absolute -inset-8 blur-3xl bg-gradient-to-br ${action.accent}`}
+                />
+              </div>
+              <div className="relative flex items-start gap-4">
+                <span
+                  className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${action.accent} text-white shadow-lg`}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-slate-900">
+                    {action.title}
+                  </p>
+                  <p className="text-sm text-slate-500">{action.description}</p>
+                </div>
+                {!action.disabled && (
+                  <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-slate-900" />
+                )}
+              </div>
+            </Link>
+          )
+        })}
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {statHighlights.map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-slate-900/70"
+          >
+            <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-300">
+              {stat.label}
+            </p>
+            <p className="text-3xl font-semibold text-slate-900 mt-2 dark:text-white">
+              {stat.value}
+            </p>
+            <p className="text-xs text-slate-500 mt-1 dark:text-slate-400">
+              {stat.change}
+            </p>
+            <div className="mt-4 h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+              <div
+                className={`h-2 rounded-full bg-gradient-to-r ${stat.accent}`}
+              />
             </div>
           </div>
-        </div>
+        ))}
+      </section>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 text-left">
-              <span className="text-2xl">➕</span>
-              <div>
-                <p className="font-semibold text-gray-900">Add New Record</p>
-                <p className="text-sm text-gray-600">Create evangelism record</p>
+      <section className="grid gap-6 lg:grid-cols-[1.4fr,1fr]">
+        <Card className="shadow-lg glass-panel">
+          <CardHeader>
+            <CardTitle>Team pulse</CardTitle>
+            <CardDescription>
+              Who&rsquo;s on the field this week and what they&rsquo;re focused
+              on.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {[1, 2, 3, 4].map((item) => (
+              <div
+                key={item}
+                className="flex items-center justify-between rounded-2xl border border-slate-100 p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                    {user?.full_name?.charAt(0) || 'E'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      Evangelist {item}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Planning follow-up visits
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs font-medium uppercase tracking-wide text-emerald-600">
+                  On mission
+                </span>
               </div>
-            </button>
-            <button className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 text-left">
-              <span className="text-2xl">📋</span>
-              <div>
-                <p className="font-semibold text-gray-900">View Records</p>
-                <p className="text-sm text-gray-600">Browse all records</p>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg glass-panel">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users2 className="h-5 w-5 text-indigo-500" />
+              Action center
+            </CardTitle>
+            <CardDescription>
+              High priority follow-ups based on recent reports.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-slate-100 p-4 shadow-sm"
+              >
+                <p className="text-sm font-semibold text-slate-900">
+                  Follow-up #{item}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Confirm discipleship path with new contact
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className="mt-4"
+                >
+                  <Link href="/reports">View report</Link>
+                </Button>
               </div>
-            </button>
-            <button className="flex items-center gap-3 p-4 rounded-lg border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all duration-200 text-left">
-              <span className="text-2xl">📊</span>
-              <div>
-                <p className="font-semibold text-gray-900">View Reports</p>
-                <p className="text-sm text-gray-600">Analytics & insights</p>
-              </div>
-            </button>
+            ))}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
+        {insightTiles.map((tile) => (
+          <div
+            key={tile.label}
+            className="rounded-3xl border border-slate-100 bg-white/80 p-5 shadow-sm backdrop-blur dark:border-white/10 dark:bg-slate-900/60"
+          >
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+              {tile.label}
+            </p>
+            <div className="mt-2 flex items-baseline gap-3">
+              <span className="text-4xl font-bold text-slate-900 dark:text-white">
+                {tile.value}
+              </span>
+              <span className="text-xs text-slate-500 dark:text-slate-300">
+                {tile.meta}
+              </span>
+            </div>
           </div>
+        ))}
+        <div className="rounded-3xl border border-dashed border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-slate-900 font-semibold">
+            <Sparkles className="h-4 w-4 text-indigo-500" />
+            Tip
+          </div>
+          <p className="mt-2">
+            Create a rhythm: log reports immediately after outreach so the team
+            can follow up while stories are fresh.
+          </p>
         </div>
-      </div>
-    </div>
+      </section>
+    </motion.div>
   )
 }

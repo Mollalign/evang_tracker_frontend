@@ -1,22 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers'
 import { Toaster } from 'sonner'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap"
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  display: "swap"
 });
 
 export const metadata: Metadata = {
   title: "Evangelism Tracker",
-  description: "Track your evangelism activities",
+  description: "A modern, Spirit-led workspace to capture outreach stories",
 };
 
 export default function RootLayout({
@@ -25,13 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${playfair.variable} antialiased`}
       >
         <Providers>
           {children}
-          <Toaster position="top-right" richColors closeButton />
+          <Toaster position="top-right" richColors closeButton toastOptions={{ style: { borderRadius: 16, background: "rgba(8, 0, 27, 0.85)", color: "#F9FAFB", backdropFilter: "blur(8px)" } }} />
         </Providers>
       </body>
     </html>
