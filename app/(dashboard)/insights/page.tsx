@@ -43,10 +43,10 @@ export default function InsightsPage() {
   const timelineData = useMemo(() => {
     if (!reportsQuery.data || reportsQuery.data.length === 0) {
       return [
-        { month: 'Jan', heard: 40, interested: 16, accepted: 8 },
-        { month: 'Feb', heard: 55, interested: 20, accepted: 12 },
-        { month: 'Mar', heard: 48, interested: 18, accepted: 10 },
-        { month: 'Apr', heard: 72, interested: 26, accepted: 18 },
+        { month: 'Jan', heard: 40, interested: 16, accepted: 8, repented: 4 },
+        { month: 'Feb', heard: 55, interested: 20, accepted: 12, repented: 6 },
+        { month: 'Mar', heard: 48, interested: 18, accepted: 10, repented: 5 },
+        { month: 'Apr', heard: 72, interested: 26, accepted: 18, repented: 9 },
       ]
     }
 

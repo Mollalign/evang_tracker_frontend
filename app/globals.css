@@ -44,121 +44,148 @@
 }
 
 :root {
-  --radius: 0.95rem;
-  --background: #FEF8F1;
-  --foreground: #1F2A37;
-  --card: rgba(255, 255, 255, 0.82);
-  --card-foreground: #1F2A37;
-  --popover: rgba(255, 255, 255, 0.92);
-  --popover-foreground: #1F2A37;
-  --primary: #8F6BFF;
-  --primary-foreground: #FDFCFB;
-  --secondary: #F4B646;
-  --secondary-foreground: #3C2505;
-  --muted: rgba(255, 255, 255, 0.5);
-  --muted-foreground: rgba(24, 33, 45, 0.7);
-  --accent: linear-gradient(135deg, #C084FC, #8B5CF6, #FDE68A);
-  --accent-foreground: #1F2A37;
-  --destructive: #E11D48;
-  --border: rgba(143, 107, 255, 0.22);
-  --input: rgba(255, 255, 255, 0.7);
-  --ring: rgba(143, 107, 255, 0.35);
-  --chart-1: #C084FC;
-  --chart-2: #FBBF24;
-  --chart-3: #60A5FA;
-  --chart-4: #34D399;
-  --chart-5: #FB7185;
-  --sidebar: rgba(255, 255, 255, 0.78);
-  --sidebar-foreground: #1F2A37;
-  --sidebar-primary: #8F6BFF;
-  --sidebar-primary-foreground: #FDFCFB;
-  --sidebar-accent: rgba(255, 255, 255, 0.5);
-  --sidebar-accent-foreground: #1F2A37;
-  --sidebar-border: rgba(143, 107, 255, 0.18);
-  --sidebar-ring: rgba(143, 107, 255, 0.25);
+  --radius: 1rem;
+  --background: #F8F6FB;
+  --foreground: #1C1633;
+  --card: #FFFFFF;
+  --card-foreground: #1C1633;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1633;
+  --primary: #6F5DC6;
+  --primary-foreground: #FDFCFF;
+  --secondary: #0F1C3F;
+  --secondary-foreground: #F2D48F;
+  --muted: #ECE4FA;
+  --muted-foreground: #4C4264;
+  --accent: #F2D48F;
+  --accent-foreground: #1C1633;
+  --destructive: #E45C5C;
+  --border: rgba(28, 22, 51, 0.12);
+  --input: rgba(255, 255, 255, 0.92);
+  --ring: rgba(111, 93, 198, 0.35);
+  --chart-1: #6F5DC6;
+  --chart-2: #37A987;
+  --chart-3: #F2D48F;
+  --chart-4: #4BA3F5;
+  --chart-5: #E45C5C;
+  --sidebar: #F4F1FB;
+  --sidebar-foreground: #1E1935;
+  --sidebar-primary: #6F5DC6;
+  --sidebar-primary-foreground: #FDFCFF;
+  --sidebar-accent: rgba(111, 93, 198, 0.12);
+  --sidebar-accent-foreground: #1E1935;
+  --sidebar-border: rgba(28, 22, 51, 0.12);
+  --sidebar-ring: rgba(111, 93, 198, 0.3);
+  --shadow-soft: 0 12px 32px rgba(15, 18, 33, 0.08);
+  --shadow-lift: 0 20px 48px rgba(15, 18, 33, 0.12);
+  --glow-primary: 0 0 0 4px rgba(111, 93, 198, 0.18);
+  --scrim: radial-gradient(circle at top, rgba(255, 255, 255, 0.8), transparent 60%);
 }
 
 .dark {
-  --background: #080C1A;
-  --foreground: #F1F5F9;
-  --card: rgba(10, 15, 28, 0.88);
-  --card-foreground: #F1F5F9;
-  --popover: rgba(10, 15, 28, 0.95);
-  --popover-foreground: #F1F5F9;
-  --primary: #C9B5FF;
-  --primary-foreground: #130B25;
-  --secondary: #F6C87B;
-  --secondary-foreground: #150F03;
-  --muted: rgba(15, 23, 42, 0.7);
-  --muted-foreground: rgba(203, 213, 225, 0.75);
-  --accent: linear-gradient(135deg, #C9B5FF, #8B5CF6, #F472B6);
-  --accent-foreground: #080C1A;
-  --border: rgba(148, 163, 184, 0.22);
-  --input: rgba(30, 41, 59, 0.8);
-  --ring: rgba(201, 181, 255, 0.45);
-  --sidebar: rgba(5, 8, 20, 0.92);
-  --sidebar-foreground: #F1F5F9;
-  --sidebar-primary: #C9B5FF;
-  --sidebar-primary-foreground: #130B25;
-  --sidebar-accent: rgba(255, 255, 255, 0.08);
-  --sidebar-accent-foreground: #F8FAFC;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: rgba(201, 181, 255, 0.35);
+  --background: #0F1221;
+  --foreground: #F5F1FF;
+  --card: #151934;
+  --card-foreground: #F5F1FF;
+  --popover: #1D2141;
+  --popover-foreground: #F5F1FF;
+  --primary: #CBB7FF;
+  --primary-foreground: #120A26;
+  --secondary: #F2D48F;
+  --secondary-foreground: #1F1402;
+  --muted: #1D2141;
+  --muted-foreground: #D3CBED;
+  --accent: #8967F9;
+  --accent-foreground: #FDF7FF;
+  --destructive: #F07B7B;
+  --border: rgba(245, 241, 255, 0.12);
+  --input: rgba(21, 25, 52, 0.95);
+  --ring: rgba(203, 183, 255, 0.45);
+  --sidebar: #121634;
+  --sidebar-foreground: #F5F1FF;
+  --sidebar-primary: #CBB7FF;
+  --sidebar-primary-foreground: #120A26;
+  --sidebar-accent: rgba(203, 183, 255, 0.15);
+  --sidebar-accent-foreground: #F5F1FF;
+  --sidebar-border: rgba(245, 241, 255, 0.12);
+  --sidebar-ring: rgba(203, 183, 255, 0.35);
+  --shadow-soft: 0 14px 30px rgba(5, 7, 16, 0.45);
+  --shadow-lift: 0 22px 55px rgba(5, 7, 16, 0.55);
+  --glow-primary: 0 0 0 4px rgba(203, 183, 255, 0.25);
+  --scrim: radial-gradient(circle at top, rgba(15, 18, 33, 0.65), transparent 65%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     background:
-      radial-gradient(circle at 15% -10%, rgba(240, 171, 252, 0.45), transparent 55%),
-      radial-gradient(circle at 85% 0%, rgba(254, 215, 170, 0.35), transparent 50%),
+      radial-gradient(circle at 15% -20%, rgba(242, 212, 143, 0.2), transparent 55%),
+      radial-gradient(circle at 85% 0%, rgba(111, 93, 198, 0.18), transparent 45%),
       var(--background);
     color: var(--foreground);
     min-height: 100vh;
     position: relative;
   }
+
   body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
-    opacity: 0.18;
+    background-image: var(--scrim);
+    opacity: 0.35;
     pointer-events: none;
     z-index: -1;
   }
+
   .dark body {
     background:
-      radial-gradient(circle at 10% -10%, rgba(129, 140, 248, 0.25), transparent 45%),
-      radial-gradient(circle at 90% 5%, rgba(248, 113, 113, 0.2), transparent 40%),
+      radial-gradient(circle at 10% -10%, rgba(137, 103, 249, 0.25), transparent 45%),
+      radial-gradient(circle at 90% 5%, rgba(240, 162, 43, 0.15), transparent 40%),
       var(--background);
   }
+
   .dark body::before {
-    opacity: 0.12;
+    opacity: 0.4;
+  }
+
+  ::selection {
+    background: rgba(111, 93, 198, 0.35);
+    color: var(--primary-foreground);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-playfair), serif;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    backdrop-filter: blur(24px);
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(22px);
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(111, 93, 198, 0.18);
+    box-shadow: var(--shadow-soft);
   }
 
   .dark .glass-panel {
-    background: rgba(15, 23, 42, 0.7);
-    border-color: rgba(248, 250, 252, 0.08);
+    background: rgba(18, 22, 52, 0.72);
+    border-color: rgba(203, 183, 255, 0.2);
+    box-shadow: var(--shadow-soft);
   }
 
-  .floating-label input:focus + label,
-  .floating-label input:not(:placeholder-shown) + label {
-    top: 0rem;
-    font-size: 0.75rem;
-    color: var(--primary);
+  .elevation-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .elevation-lift {
+    box-shadow: var(--shadow-lift);
   }
 
   .floating-label {
@@ -167,10 +194,10 @@
 
   .floating-label input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 1rem;
-    padding: 1.1rem 1.25rem 0.4rem;
-    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 0.9rem;
+    padding: 1.15rem 1.25rem 0.4rem;
+    border: 1px solid rgba(28, 22, 51, 0.12);
     transition: border 0.2s ease, box-shadow 0.2s ease;
   }
 
@@ -178,23 +205,24 @@
     position: absolute;
     left: 1.25rem;
     top: 1rem;
-    color: rgba(31, 41, 55, 0.6);
+    color: rgba(28, 22, 51, 0.6);
     transition: all 0.2s ease;
     pointer-events: none;
     font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .floating-label input:focus {
-    border-color: rgba(124, 58, 237, 0.5);
-    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    border-color: var(--primary);
+    box-shadow: var(--glow-primary);
   }
 
-  .animate-delay-1000 {
-    animation-delay: 1s;
-  }
-
-  .animate-delay-2000 {
-    animation-delay: 2s;
+  .floating-label input:focus + label,
+  .floating-label input:not(:placeholder-shown) + label {
+    top: 0rem;
+    font-size: 0.7rem;
+    color: var(--primary);
   }
 
   @keyframes smooth-pulse {

@@ -19,12 +19,13 @@ export function FormField({
   rightElement,
   ...props
 }: FormFieldProps) {
-  const fieldId = id || React.useId()
+  const generatedId = React.useId()
+  const fieldId = id ?? generatedId
   
   return (
-    <div className={cn("space-y-2", containerClassName)}>
+    <div className={cn("space-y-2.5", containerClassName)}>
       {label && (
-        <Label htmlFor={fieldId} className="text-sm font-medium text-gray-700">
+        <Label htmlFor={fieldId} className="tracking-[0.2em] text-xs text-muted-foreground">
           {label}
         </Label>
       )}
