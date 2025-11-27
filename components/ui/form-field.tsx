@@ -23,9 +23,9 @@ export function FormField({
   const fieldId = id ?? generatedId
   
   return (
-    <div className={cn("space-y-2.5", containerClassName)}>
+    <div className={cn("space-y-2", containerClassName)}>
       {label && (
-        <Label htmlFor={fieldId} className="tracking-[0.2em] text-xs text-muted-foreground">
+        <Label htmlFor={fieldId} className="tracking-[0.25em] text-[0.68rem]">
           {label}
         </Label>
       )}
@@ -49,7 +49,7 @@ export function FormField({
         )}
       </div>
       {error && (
-        <p id={`${fieldId}-error`} className="text-sm text-destructive animate-in fade-in-0 slide-in-from-top-1">
+        <p id={`${fieldId}-error`} className="text-xs font-medium tracking-wide text-destructive">
           {error}
         </p>
       )}

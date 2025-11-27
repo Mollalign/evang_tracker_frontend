@@ -30,6 +30,15 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
+// Force TS to recognize repented exists ALWAYS
+type TimelineRow = {
+  month: string
+  heard: number
+  interested: number
+  accepted: number
+  repented: number
+}
+
 export default function InsightsPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading } = useAuth()
@@ -40,7 +49,8 @@ export default function InsightsPage() {
     enabled: isAuthenticated,
   })
 
-  const timelineData = useMemo(() => {
+  const timelineData: TimelineRow[] = useMemo(() => {
+    // No DB data → fallback demo timeline
     if (!reportsQuery.data || reportsQuery.data.length === 0) {
       return [
         { month: 'Jan', heard: 40, interested: 16, accepted: 8, repented: 4 },
@@ -50,34 +60,32 @@ export default function InsightsPage() {
       ]
     }
 
-    const grouped = new Map<
-      string,
-      { heard: number; interested: number; accepted: number; repented: number }
-    >()
+    // Group reports by month
+    const grouped = new Map<string, TimelineRow>()
 
     reportsQuery.data.forEach((report) => {
       const month = new Date(report.date).toLocaleString('en', {
         month: 'short',
       })
+
       if (!grouped.has(month)) {
         grouped.set(month, {
+          month,
           heard: 0,
           interested: 0,
           accepted: 0,
           repented: 0,
         })
       }
-      const group = grouped.get(month)!
-      group.heard += report.heard_count
-      group.interested += report.interested_count
-      group.accepted += report.accepted_count
-      group.repented += report.repented_count
+
+      const row = grouped.get(month)!
+      row.heard += report.heard_count
+      row.interested += report.interested_count
+      row.accepted += report.accepted_count
+      row.repented += report.repented_count
     })
 
-    return Array.from(grouped.entries()).map(([month, values]) => ({
-      month,
-      ...values,
-    }))
+    return Array.from(grouped.values())
   }, [reportsQuery.data])
 
   const conversionTrend = useMemo(() => {
@@ -108,13 +116,14 @@ export default function InsightsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <section className="rounded-[36px] bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-400 p-1 shadow-[0_30px_80px_rgba(99,102,241,0.35)]">
+      {/* Header Section */}
+      <section className="rounded-[36px] bg-linear-to-br from-violet-500 via-fuchsia-500 to-amber-400 p-1 shadow-[0_30px_80px_rgba(99,102,241,0.35)]">
         <div className="flex flex-col gap-6 rounded-[34px] bg-white/85 p-8 text-slate-800 lg:flex-row lg:items-center lg:justify-between dark:bg-slate-900/80 dark:text-white">
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-[0.25em] text-white/80">
               Revival dashboard
             </p>
-            <h1 className="font-[var(--font-playfair)] text-4xl leading-tight">
+            <h1 className="font-(--font-playfair) text-4xl leading-tight">
               Insights that help you shepherd the harvest with beauty and care.
             </h1>
             <p className="text-sm text-slate-700/80 dark:text-slate-200/80">
@@ -134,7 +143,9 @@ export default function InsightsPage() {
         </div>
       </section>
 
+      {/* Charts Section */}
       <section className="grid gap-6 lg:grid-cols-[1.6fr,1fr]">
+        {/* Monthly Impact Chart */}
         <Card className="glass-panel">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -145,7 +156,7 @@ export default function InsightsPage() {
               Outreach reach vs. heart response across the year
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[320px]">
+          <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={timelineData}>
                 <defs>
@@ -153,13 +164,7 @@ export default function InsightsPage() {
                     <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.6} />
                     <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
                   </linearGradient>
-                  <linearGradient
-                    id="colorInterested"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
+                  <linearGradient id="colorInterested" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.6} />
                     <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
                   </linearGradient>
@@ -200,6 +205,7 @@ export default function InsightsPage() {
           </CardContent>
         </Card>
 
+        {/* Conversion Trend Chart */}
         <Card className="glass-panel">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -210,12 +216,15 @@ export default function InsightsPage() {
               Interest vs. commitment trend throughout the year.
             </CardDescription>
           </CardHeader>
-          <CardContent className="h-[320px]">
+          <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={conversionTrend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
                 <XAxis dataKey="month" stroke="#94A3B8" />
-                <YAxis tickFormatter={(value) => `${value * 100}%`} stroke="#94A3B8" />
+                <YAxis
+                  tickFormatter={(value) => `${value * 100}%`}
+                  stroke="#94A3B8"
+                />
                 <Tooltip
                   formatter={(value: number) => `${(value * 100).toFixed(0)}%`}
                   contentStyle={{
@@ -243,6 +252,7 @@ export default function InsightsPage() {
         </Card>
       </section>
 
+      {/* Stats Cards */}
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           {
@@ -251,7 +261,8 @@ export default function InsightsPage() {
               conversionTrend.reduce(
                 (acc, curr) => acc + curr.interestRate,
                 0
-              ) / conversionTrend.length -
+              ) /
+                conversionTrend.length -
                 0.0001
             ) * 100 || 42}%`,
             meta: 'vs total reached',
@@ -267,7 +278,7 @@ export default function InsightsPage() {
           {
             title: 'Ready for discipleship',
             value: `${Math.round(
-              timelineData.reduce((acc, row) => acc + (row.repented ?? 0), 0)
+              timelineData.reduce((acc, row) => acc + row.repented, 0)
             ) || 8}`,
             meta: 'need follow-up',
           },
@@ -289,12 +300,13 @@ export default function InsightsPage() {
         ))}
       </section>
 
+      {/* No Reports */}
       {reportsQuery.data?.length === 0 && (
         <Card className="glass-panel border-dashed">
           <CardHeader>
             <CardTitle>No reports discovered</CardTitle>
             <CardDescription>
-              Once reports are logged you&rsquo;ll see the Spirit-led trends here.
+              Once reports are logged you’ll see the Spirit-led trends here.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -309,4 +321,3 @@ export default function InsightsPage() {
     </motion.div>
   )
 }
-
